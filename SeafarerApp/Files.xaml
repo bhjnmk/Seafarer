@@ -1,0 +1,477 @@
+﻿<UserControl Name="UCFiles"
+             x:Class="SeafarerApp.Files"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             mc:Ignorable="d" 
+             d:DesignHeight="600" d:DesignWidth="800" 
+             Background="White" IsVisibleChanged="UCFiles_IsVisibleChanged">
+    <UserControl.Resources>
+        <Image x:Key="RefreshImg" Source="img/refresh.png"/>
+        <Image x:Key="DeleteImg" Source="img/delete.png"/>
+        <Image x:Key="Delete2Img" Source="img/delete2.png"/>
+        <Image x:Key="OpenFolderImg" Source="img/open-folder.png"/>
+        <Image x:Key="OpenFileImg" Source="img/open-file.png"/>
+        <Image x:Key="OpenFile2Img" Source="img/open-file2.png"/>
+        <Image x:Key="NewFileImg" Source="img/new-file.png"/>
+        <Image x:Key="ClearImg" Source="img/clear.png"/>
+        <Image x:Key="SaveImg" Source="img/save.png"/>
+        <Image x:Key="SaveAsImg" Source="img/save-as.png"/>
+        <Image x:Key="ArchiveImg" Source="img/archive.png"/>
+        <Image x:Key="DownloadImg" Source="img/download.png"/>
+        <Image x:Key="UloadImg" Source="img/upload.png"/>
+        <Image x:Key="EditImg" Source="img/edit.png"/>
+    </UserControl.Resources>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="5"/>
+            <ColumnDefinition Width="250"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="5"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="5"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="162*"/>
+            <RowDefinition Height="40*"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="203*"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="5"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel Orientation="Horizontal"
+                    Grid.Column="1"
+                    Grid.Row="1"
+                    Grid.RowSpan="2"
+                    HorizontalAlignment="Center" 
+                    Margin="7,0">
+            <StackPanel Orientation="Vertical">
+                <TextBlock Text="Serwer"
+                           VerticalAlignment="Center"
+                           FontSize="20"
+                           Margin="10,0"/>
+                <Button Name="RefreshServerBtn"
+                        Content="{StaticResource RefreshImg}"
+                        Width="30"
+                        Height="30"
+                        HorizontalAlignment="Center" 
+                        VerticalAlignment="Center" 
+                        BorderBrush="#FF636363"
+                        Background="#FFE6E6E6"
+                        Margin="5" 
+                        Click="RefreshServerBtn_Click"
+                        ToolTipService.ShowOnDisabled="True">
+                    <Button.ToolTip>
+                        <ToolTip>
+                            <StackPanel>
+                                <TextBlock FontWeight="Bold">Odśwież listę plików z serwera</TextBlock>
+                                <TextBlock>Przeładowuje listę plików z serwera</TextBlock>
+                            </StackPanel>
+                        </ToolTip>
+                    </Button.ToolTip>
+                </Button>
+            </StackPanel>
+            <Button Name="OpenFileServerBtn"
+                    Content="{StaticResource OpenFileImg}"
+                    IsEnabled="False"
+                    Width="40"
+                    Height="40"
+                    HorizontalAlignment="Center" 
+                    VerticalAlignment="Center" 
+                    BorderBrush="#FF636363"
+                    Background="#FFE6E6E6"
+                    Margin="5" 
+                    Click="OpenFileServerBtn_Click"
+                    ToolTipService.ShowOnDisabled="True">
+                <Button.ToolTip>
+                    <ToolTip>
+                        <StackPanel>
+                            <TextBlock FontWeight="Bold">Otwórz plik z serwera</TextBlock>
+                            <TextBlock>Otwiera w edytorze zaznaczony na liście plik</TextBlock>
+                        </StackPanel>
+                    </ToolTip>
+                </Button.ToolTip>
+            </Button>
+            <Button Name="DeleteServerFileBtn"
+                    Content="{StaticResource Delete2Img}"
+                    IsEnabled="False"
+                    Width="40"
+                    Height="40"
+                    Margin="5" 
+                    HorizontalAlignment="Center" 
+                    VerticalAlignment="Center" 
+                    Background="#FFE6E6E6" 
+                    BorderBrush="#FF636363"
+                    Click="DeleteServerFileBtn_Click"
+                    ToolTipService.ShowOnDisabled="True">
+                <Button.ToolTip>
+                    <ToolTip>
+                        <StackPanel>
+                            <TextBlock FontWeight="Bold">Usuń plik z serwera</TextBlock>
+                            <TextBlock>Usuwa z serwera zaznaczony na liście plik</TextBlock>
+                        </StackPanel>
+                    </ToolTip>
+                </Button.ToolTip>
+            </Button>
+            <Button Name="DownloadBtn"
+                    Content="{StaticResource DownloadImg}"
+                    IsEnabled="False"
+                    Width="40"
+                    Height="40"
+                    Margin="5,0,10,0"
+                    Background="#FFE6E6E6" 
+                    BorderBrush="#FF636363"
+                    Click="DownloadBtn_Click" 
+                    ToolTipService.ShowOnDisabled="True">
+                <Button.ToolTip>
+                    <ToolTip>
+                        <StackPanel>
+                            <TextBlock FontWeight="Bold">Pobierz plik z serwera</TextBlock>
+                            <TextBlock>Pobiera plik z serwera do aktualnej ścieżki</TextBlock>
+                        </StackPanel>
+                    </ToolTip>
+                </Button.ToolTip>
+            </Button>
+        </StackPanel>
+        <ListView  Name="ListViewServer"
+                   Grid.Column="1"
+                   Grid.Row="3"
+                   Grid.RowSpan="2"
+                   Margin="25,0,25,5" 
+                   Width="200"
+                   PreviewMouseLeftButtonUp="ListViewServer_Click" 
+                   SelectionChanged="ListViewServer_SelectionChanged"
+                   ToolTipService.ShowOnDisabled="True">
+            <ListView.ToolTip>
+                <ToolTip>
+                    <StackPanel>
+                        <TextBlock FontWeight="Bold">Pliki na serwerze</TextBlock>
+                        <TextBlock>Zaznacz dowolny plik, aby aktywować przyciski powyżej</TextBlock>
+                    </StackPanel>
+                </ToolTip>
+            </ListView.ToolTip>
+        </ListView>
+        <StackPanel Orientation="Horizontal"
+                    Grid.Column="1"
+                    Grid.Row="5"
+                    HorizontalAlignment="Center" 
+                    Margin="17,0">
+            <StackPanel Orientation="Vertical">
+                <TextBlock Text="Dysk"
+                           VerticalAlignment="Center"
+                           FontSize="20"
+                           Margin="10,0"/>
+                <Button Name="ChooseFolderBtn"
+                        Content="{StaticResource OpenFolderImg}"
+                        Width="30"
+                        Height="30"
+                        Margin="5" 
+                        HorizontalAlignment="Center" 
+                        VerticalAlignment="Center" 
+                        Background="#FFE6E6E6" 
+                        BorderBrush="#FF636363"
+                        Click="ChooseFolderBtn_Click"
+                        ToolTipService.ShowOnDisabled="True">
+                    <Button.ToolTip>
+                        <ToolTip>
+                            <StackPanel>
+                                <TextBlock FontWeight="Bold">Wybierz folder na dysku</TextBlock>
+                                <TextBlock>Ustala aktualną ścieżkę zapisu plików na dysku</TextBlock>
+                            </StackPanel>
+                        </ToolTip>
+                    </Button.ToolTip>
+                </Button>
+            </StackPanel>
+            <Button Name="OpenFileDriveBtn"
+                    Content="{StaticResource OpenFile2Img}"
+                    IsEnabled="False"
+                    Width="40"
+                    Height="40"
+                    Margin="5"
+                    HorizontalAlignment="Center" 
+                    VerticalAlignment="Center" 
+                    Background="#FFE6E6E6" 
+                    BorderBrush="#FF636363"
+                    Click="OpenFileDriveBtn_Click"
+                    ToolTipService.ShowOnDisabled="True">
+                <Button.ToolTip>
+                    <ToolTip>
+                        <StackPanel>
+                            <TextBlock FontWeight="Bold">Otwórz plik z dysku</TextBlock>
+                            <TextBlock>Otwiera w edytorze zaznaczony na liście plik</TextBlock>
+                        </StackPanel>
+                    </ToolTip>
+                </Button.ToolTip>
+            </Button>
+            <Button Name="DeleteDriveFileBtn"
+                    Content="{StaticResource DeleteImg}"
+                    IsEnabled="False"
+                    Width="40"
+                    Height="40"
+                    Margin="5" 
+                    HorizontalAlignment="Center" 
+                    VerticalAlignment="Center" 
+                    Background="#FFE6E6E6" 
+                    BorderBrush="#FF636363"
+                    Click="DeleteDriveFileBtn_Click"
+                    ToolTipService.ShowOnDisabled="True">
+                <Button.ToolTip>
+                    <ToolTip>
+                        <StackPanel>
+                            <TextBlock FontWeight="Bold">Usuń plik z dysku</TextBlock>
+                            <TextBlock>Usuwa z dysku zaznaczony na liście plik</TextBlock>
+                        </StackPanel>
+                    </ToolTip>
+                </Button.ToolTip>
+            </Button>
+            <Button Name="EditFileBtn"
+                    Content="{StaticResource EditImg}"
+                    IsEnabled="False"
+                    Width="40"
+                    Height="40"
+                    Margin="5,0,10,0" 
+                    HorizontalAlignment="Center" 
+                    VerticalAlignment="Center" 
+                    Background="#FFE6E6E6" 
+                    BorderBrush="#FF636363"
+                    Click="EditFileBtn_Click"
+                    ToolTipService.ShowOnDisabled="True">
+                <Button.ToolTip>
+                    <ToolTip>
+                        <StackPanel>
+                            <TextBlock FontWeight="Bold">Edytuj plik z dysku</TextBlock>
+                            <TextBlock>Pozwala na edycję pliku na dysku, otwierając go w edytorze</TextBlock>
+                        </StackPanel>
+                    </ToolTip>
+                </Button.ToolTip>
+            </Button>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal"
+                    Grid.Column="1"
+                    Grid.Row="6"
+                    HorizontalAlignment="Center">
+            <TextBlock Name="TxtbPath" 
+                       Text="ścieżka"
+                       Margin="5,0,5,15"
+                       FontSize="15"
+                       VerticalAlignment="Bottom"/>
+            <Button Name="ArchiveFileBtn"
+                    Content="{StaticResource ArchiveImg}"
+                    IsEnabled="False"
+                    Width="40"
+                    Height="40"
+                    Margin="5" 
+                    HorizontalAlignment="Center" 
+                    VerticalAlignment="Center" 
+                    Background="#FFE6E6E6" 
+                    BorderBrush="#FF636363"
+                    Click="ArchiveFileBtn_Click"
+                    ToolTipService.ShowOnDisabled="True">
+                <Button.ToolTip>
+                    <ToolTip>
+                        <StackPanel>
+                            <TextBlock FontWeight="Bold">Archiwizuj plik z dysku</TextBlock>
+                            <TextBlock>Przenosi zaznaczony plik do folderu Archiwum znajdującego się w aktualnej ścieżce</TextBlock>
+                        </StackPanel>
+                    </ToolTip>
+                </Button.ToolTip>
+            </Button>
+            <Button Name="UploadBtn"
+                    Content="{StaticResource UloadImg}"
+                    IsEnabled="False"
+                    Width="40"
+                    Height="40"
+                    Margin="5" 
+                    HorizontalAlignment="Center" 
+                    VerticalAlignment="Center" 
+                    Background="#FFE6E6E6" 
+                    BorderBrush="#FF636363"
+                    Click="UploadBtn_Click"
+                    ToolTipService.ShowOnDisabled="True">
+                <Button.ToolTip>
+                    <ToolTip>
+                        <StackPanel>
+                            <TextBlock FontWeight="Bold">Wyślij plik z dysku na serwer</TextBlock>
+                            <TextBlock>Wysyła plik z dysku na serwer</TextBlock>
+                        </StackPanel>
+                    </ToolTip>
+                </Button.ToolTip>
+            </Button>
+        </StackPanel>
+        <ListView x:Name="ListViewDrive"
+                  Grid.Column="1"
+                  Grid.Row="7"
+                  Margin="25,0"
+                  Width="200"
+                  HorizontalAlignment="Center"
+                  PreviewMouseLeftButtonUp="ListViewDrive_Click"
+                  SelectionChanged="ListViewDrive_SelectionChanged"
+                  ToolTipService.ShowOnDisabled="True">
+            <ListView.ToolTip>
+                <ToolTip>
+                    <StackPanel>
+                        <TextBlock FontWeight="Bold">Pliki na dysku</TextBlock>
+                        <TextBlock>Zaznacz dowolny plik, aby aktywować przyciski powyżej</TextBlock>
+                    </StackPanel>
+                </ToolTip>
+            </ListView.ToolTip>
+        </ListView>
+        <StackPanel Name="CommandSP" 
+                    Orientation="Vertical"
+                    Grid.Column="2"
+                    Grid.ColumnSpan="2"
+                    Grid.Row="3"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    IsEnabled="False">
+            <StackPanel Orientation="Horizontal"
+                        Margin="10">
+                <Button Name="Command1Btn" 
+                        Content="Command1"
+                        Margin="10"
+                        Width="100"
+                        Height="40" 
+                        Click="Command1Btn_Click"/>
+                <Button Name="Command2Btn" 
+                        Content="Command2"
+                        Margin="10"
+                        Width="100"
+                        Height="40" 
+                        Click="Command2Btn_Click"/>
+                <Button Name="Command3Btn" 
+                        Content="Command3"
+                        Margin="10"
+                        Width="100"
+                        Height="40" 
+                        Click="Command3Btn_Click"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal"
+                        Margin="10">
+                <Button Name="Command4Btn" 
+                        Content="Command4"
+                        Margin="10"
+                        Width="100"
+                        Height="40" 
+                        Click="Command4Btn_Click"/>
+                <Button Name="Command5Btn" 
+                        Content="Command5"
+                        Margin="10"
+                        Width="100"
+                        Height="40" 
+                        Click="Command5Btn_Click"/>
+                <Button Name="Command6Btn" 
+                        Content="Command6"
+                        Margin="10"
+                        Width="100"
+                        Height="40" 
+                        Click="Command6Btn_Click"/>
+            </StackPanel>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal"
+                    Grid.Column="2"
+                    Grid.ColumnSpan="2"
+                    Grid.Row="5"
+                    HorizontalAlignment="Center">
+            <TextBlock Text="Edytor"
+                       FontSize="20"
+                       VerticalAlignment="Center"
+                       Margin="10"/>
+            <Button Name="NewFileBtn" 
+                    Content="{StaticResource NewFileImg}"
+                    Width="40"
+                    Height="40"
+                    Margin="5" 
+                    Background="#FFE6E6E6" 
+                    BorderBrush="#FF636363"
+                    Click="NewFileBtn_Click"
+                    ToolTipService.ShowOnDisabled="True">
+                <Button.ToolTip>
+                    <ToolTip>
+                        <StackPanel>
+                            <TextBlock FontWeight="Bold">Utwórz nowy plik na dysku</TextBlock>
+                            <TextBlock>Tworzy nowy plik w aktualnej ścieżce i umożliwia jego tworzenie w oknie edytora</TextBlock>
+                        </StackPanel>
+                    </ToolTip>
+                </Button.ToolTip>
+            </Button>
+            <Button Name="SaveBtn" 
+                    Content="{StaticResource SaveImg}"
+                    IsEnabled="False"
+                    Width="40"
+                    Height="40"
+                    Margin="5" 
+                    Background="#FFE6E6E6" 
+                    BorderBrush="#FF636363"
+                    Click="SaveBtn_Click"
+                    ToolTipService.ShowOnDisabled="True">
+                <Button.ToolTip>
+                    <ToolTip>
+                        <StackPanel>
+                            <TextBlock FontWeight="Bold">Zapisz plik</TextBlock>
+                            <TextBlock>Zapisuje plik (aktualną wersję widoczną w edytorze) i czyści i dezaktuwuje edytor</TextBlock>
+                        </StackPanel>
+                    </ToolTip>
+                </Button.ToolTip>
+            </Button>
+            <Button Name="SaveAsBtn" 
+                    Content="{StaticResource SaveAsImg}"
+                    Width="40"
+                    Height="40"
+                    Margin="5" 
+                    Background="#FFE6E6E6" 
+                    BorderBrush="#FF636363"
+                    IsEnabled="False"
+                    Click="SaveAsBtn_Click"
+                    ToolTipService.ShowOnDisabled="True">
+                <Button.ToolTip>
+                    <ToolTip>
+                        <StackPanel>
+                            <TextBlock FontWeight="Bold">Zapisz plik jako</TextBlock>
+                            <TextBlock>Umożliwia zapisanie aktualnie widocznego pliku na dysku pod nową nazwą i jego edycję</TextBlock>
+                        </StackPanel>
+                    </ToolTip>
+                </Button.ToolTip>
+            </Button>
+            <Button Name="ClearBtn"
+                    Grid.Column="2" 
+                    Grid.Row="7"
+                    Margin="5,0,10,0" 
+                    Content="{StaticResource ClearImg}"
+                    IsEnabled="False"
+                    Width="40"
+                    Height="40"
+                    Background="#FFE6E6E6" 
+                    BorderBrush="#FF636363"
+                    Click="ClearBtn_Click"
+                    ToolTipService.ShowOnDisabled="True">
+                <Button.ToolTip>
+                    <ToolTip>
+                        <StackPanel>
+                            <TextBlock FontWeight="Bold">Wyczyść edytor</TextBlock>
+                            <TextBlock>Czyści okno edytora</TextBlock>
+                        </StackPanel>
+                    </ToolTip>
+                </Button.ToolTip>
+            </Button>
+        </StackPanel>
+        <RichTextBox Name="RtbEditor" 
+                     Grid.Column="2"
+                     Grid.ColumnSpan="2"
+                     Grid.Row="6"
+                     Grid.RowSpan="2"
+                     Margin="5,0,0,0" 
+                     IsReadOnly="True"
+                     TextChanged="RtbEditor_TextChanged">
+            <RichTextBox.ToolTip>
+                <ToolTip>
+                    <TextBlock FontWeight="Bold">Okno edytora</TextBlock>
+                </ToolTip>
+            </RichTextBox.ToolTip>
+        </RichTextBox>
+    </Grid>
+</UserControl>
